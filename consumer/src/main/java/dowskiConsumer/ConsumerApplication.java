@@ -1,13 +1,13 @@
-package com.example.springdemo;
+package dowskiConsumer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringDemoApplication {
+public class ConsumerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringDemoApplication.class, args);
+        SpringApplication.run(ConsumerApplication.class, args);
     }
 
 }
