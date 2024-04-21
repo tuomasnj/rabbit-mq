@@ -1,9 +1,15 @@
+package dowskiProvider;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -11,9 +17,15 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ProviderTest.class)
+@SpringBootTest
 @Slf4j
 public class ProviderTest {
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private Queue simpleQueue;
+
     @Test
     public void testSendMessage() throws IOException, TimeoutException {
         //1、建立mq的连接
@@ -44,5 +56,13 @@ public class ProviderTest {
         //5、关闭连接
         channel.close();
         connection.close();
+    }
+
+    @Test
+    public void sendMsg(){
+        for (int i = 0; i <= 80; i ++) {
+            rabbitTemplate.convertAndSend(simpleQueue.getName(), "hello,rabbit..." + i);
+            log.info("hello,rabbit..." + i);
+        }
     }
 }

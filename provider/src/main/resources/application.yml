@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8079
 spring:
   rabbitmq:
     host: 127.0.0.1
@@ -7,6 +7,3 @@ spring:
     virtual-host: /dowski
     username: dowski
     password: dowski
-    listener:
-      simple:
-        prefetch: 1
