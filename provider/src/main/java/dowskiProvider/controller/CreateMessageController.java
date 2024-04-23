@@ -34,7 +34,7 @@ public class CreateMessageController {
     }
 
     @GetMapping("/sendTest")
-    public void SimpleQueue(){
+    public void dowskiFanoutQueue(){
         Student student = new Student();
         student.setAge(10);
         student.setName("呙明贤");
@@ -43,19 +43,5 @@ public class CreateMessageController {
         String format= simpleDateFormat.format(new Date());
         rabbitTemplate.convertAndSend(fanoutExchange.getName(), "",student);
         log.info("异步消息发送成功" + format);
-    }
-
-    @RabbitListener(queues = {"dowski.queue_1"})
-    public void handleMessage1(Student student){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String format= simpleDateFormat.format(new Date());
-        log.info(format + "====1111===="+ student);
-    }
-
-    @RabbitListener(queues = {"dowski.queue_2"})
-    public void handleMessage2(Student student){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String format= simpleDateFormat.format(new Date());
-        log.info(format + "====2222===="+ student);
     }
 }
