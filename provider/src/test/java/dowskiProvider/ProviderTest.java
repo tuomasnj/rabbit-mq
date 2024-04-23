@@ -82,7 +82,7 @@ public class ProviderTest {
         student.setAge(10);
         student.setName("呙明贤");
         student.setIdCard("324568744125025666");
-        for (int i = 0; i <= 10000; i ++) {
+        for (int i = 0; i <= 100; i ++) {
             rabbitTemplate.convertAndSend(exchange.getName(), "", student);
             log.info("hello,rabbit..." + i);
         }
