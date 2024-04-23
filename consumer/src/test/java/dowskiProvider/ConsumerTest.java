@@ -1,3 +1,4 @@
+package dowskiProvider;
 
 import com.rabbitmq.client.*;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-@SpringBootTest(classes = ConsumerTest.class)
+@SpringBootTest
 @RunWith(SpringRunner.class)
 @Slf4j
 public class ConsumerTest {

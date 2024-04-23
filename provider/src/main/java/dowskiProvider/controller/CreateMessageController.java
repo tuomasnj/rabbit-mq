@@ -2,9 +2,12 @@ package dowskiProvider.controller;
 import dowskiProvider.entity.Student;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +23,7 @@ public class CreateMessageController {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private Queue queue;
+    private FanoutExchange fanoutExchange;
 
     @GetMapping("/send")
     public void testSimpleQueue(){
@@ -38,7 +41,21 @@ public class CreateMessageController {
         student.setIdCard("324568744125025666");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format= simpleDateFormat.format(new Date());
-        rabbitTemplate.convertAndSend(queue.getName(), student);
+        rabbitTemplate.convertAndSend(fanoutExchange.getName(), "",student);
         log.info("异步消息发送成功" + format);
+    }
+
+    @RabbitListener(queues = {"dowski.queue_1"})
+    public void handleMessage1(Student student){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format= simpleDateFormat.format(new Date());
+        log.info(format + "====1111===="+ student);
+    }
+
+    @RabbitListener(queues = {"dowski.queue_2"})
+    public void handleMessage2(Student student){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format= simpleDateFormat.format(new Date());
+        log.info(format + "====2222===="+ student);
     }
 }

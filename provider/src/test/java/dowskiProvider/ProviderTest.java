@@ -24,7 +24,8 @@ public class ProviderTest {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private Queue simpleQueue;
+    @Qualifier("queue1")
+    private Queue queue1;
 
     @Test
     public void testSendMessage() throws IOException, TimeoutException {
@@ -61,7 +62,7 @@ public class ProviderTest {
     @Test
     public void sendMsg(){
         for (int i = 0; i <= 80; i ++) {
-            rabbitTemplate.convertAndSend(simpleQueue.getName(), "hello,rabbit..." + i);
+            rabbitTemplate.convertAndSend(queue1.getName(), "hello,rabbit..." + i);
             log.info("hello,rabbit..." + i);
         }
     }
