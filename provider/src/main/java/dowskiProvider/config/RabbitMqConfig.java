@@ -1,9 +1,6 @@
 package dowskiProvider.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -17,9 +14,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 /**
- * Fanout模式
- * 交换机会将接收到的所有消息广播到所有绑定在该交换机上的队列。
- * 所有的队列都会存储被广播的消息用于被消费者接收
+ * Direct模式
+ * 交换机会接收到消息以及消息所对应的routingKey
+ * 在转发消息时会根据队列Queue配置的key，将消息按照routingKey和key匹配的原则把message转发到队列中（队列必须要是和交换机绑定的）。
  */
 public class RabbitMqConfig {
     @Value("${spring.rabbitmq.host}")
@@ -37,9 +34,9 @@ public class RabbitMqConfig {
     @Value("${spring.rabbitmq.virtual-host}")
     private String virtualHost;
 
-    private static final String EXCHANGE_NAME = "fanout.exchange";
-    private static final String QUEUE_NAME_1 = "dowski.queue_1";
-    private static final String QUEUE_NAME_2 = "dowski.queue_2";
+    private static final String EXCHANGE_NAME = "direct.exchange";
+    private static final String QUEUE_NAME_1 = "direct.queue_1";
+    private static final String QUEUE_NAME_2 = "direct.queue_2";
 
     @Bean
     public ConnectionFactory connectionFactory(){
@@ -53,28 +50,42 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public FanoutExchange fanoutExchange(){
-        return new FanoutExchange(EXCHANGE_NAME);
+    public DirectExchange directExchange(){
+        return new DirectExchange(EXCHANGE_NAME);
     }
 
-    @Bean(name = "queue1")
+    @Bean
     public Queue queue1(){
         return new Queue(QUEUE_NAME_1,true, false, false);
     }
 
-    @Bean(name = "queue2")
+    @Bean
     public Queue queue2(){
         return new Queue(QUEUE_NAME_2, true, false, false);
     }
 
     @Bean
-    public Binding binding1(FanoutExchange fanoutExchange,@Qualifier("queue1") Queue queue1){
-        return BindingBuilder.bind(queue1).to(fanoutExchange);
+    public Binding bindingQueue1Key1(@Qualifier("directExchange") DirectExchange directExchange,@Qualifier("queue1") Queue queue1){
+        //设置queue1的key为"key1"和"key2"
+        return BindingBuilder.bind(queue1).to(directExchange).with("key1");
     }
 
     @Bean
-    public Binding binding2(FanoutExchange fanoutExchange,@Qualifier("queue2") Queue queue2){
-        return BindingBuilder.bind(queue2).to(fanoutExchange);
+    public Binding bindingQueue1Key2(@Qualifier("directExchange") DirectExchange directExchange,@Qualifier("queue1") Queue queue1){
+        //设置queue1的key为"key1"和"key2"
+        return BindingBuilder.bind(queue1).to(directExchange).with("key2");
+    }
+
+    @Bean
+    public Binding bindingQueue2Key1(@Qualifier("directExchange") DirectExchange directExchange,@Qualifier("queue2") Queue queue2){
+        //设置queue2的key为"key1"和"key3"
+        return BindingBuilder.bind(queue2).to(directExchange).with("key1");
+    }
+
+    @Bean
+    public Binding bindingQueue2Key3(@Qualifier("directExchange") DirectExchange directExchange,@Qualifier("queue2") Queue queue2){
+        //设置queue2的key为"key1"和"key3"
+        return BindingBuilder.bind(queue2).to(directExchange).with("key3");
     }
 
     @Bean
