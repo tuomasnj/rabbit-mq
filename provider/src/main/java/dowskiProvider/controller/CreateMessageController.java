@@ -1,10 +1,7 @@
 package dowskiProvider.controller;
 import dowskiProvider.entity.Student;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +21,7 @@ public class CreateMessageController {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private DirectExchange directExchange;
+    private TopicExchange topicExchange;
 
     @GetMapping("/send")
     public void testSimpleQueue(){
@@ -35,14 +32,14 @@ public class CreateMessageController {
     }
 
     @GetMapping("/sendTest")
-    public void dowskiDirectQueue(){
+    public void dowskiTopicQueue(){
         Student student = new Student();
         student.setAge(10);
         student.setName("呙明贤");
         student.setIdCard("324568744125025666");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format= simpleDateFormat.format(new Date());
-        rabbitTemplate.convertAndSend(directExchange.getName(), "",student);
+        rabbitTemplate.convertAndSend(topicExchange.getName(), "",student);
         log.info("异步消息发送成功" + format);
     }
 }

@@ -9,9 +9,9 @@ public class MessageSender {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public static final String routingKey = "key1";
+    public static final String routingKey = "marketing.user";
 
-    public static final String exchange = "direct.exchange";
+    public static final String exchange = "topic.exchange";
 
     public void sendMsg(Object object){
         rabbitTemplate.convertAndSend(exchange, routingKey, object);

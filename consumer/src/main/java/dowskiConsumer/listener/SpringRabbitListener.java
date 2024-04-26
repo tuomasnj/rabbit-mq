@@ -11,17 +11,17 @@ import cn.hutool.json.JSONObject;
 @Component
 @Slf4j
 public class SpringRabbitListener {
-    @RabbitListener(queues = {"direct.queue_1"}, concurrency = "3")
+    @RabbitListener(queues = {"topic.queue_1"}, concurrency = "3")
     public void handleMessage1(Student student){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format= simpleDateFormat.format(new Date());
-        log.info(format + "====direct.queue_1===="+ student);
+        log.info(format + "====topic.queue_1===="+ student);
     }
 
-    @RabbitListener(queues = {"direct.queue_2"}, concurrency = "3")
+    @RabbitListener(queues = {"topic.queue_2"}, concurrency = "3")
     public void handleMessage2(Student student){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format= simpleDateFormat.format(new Date());
-        log.info(format + "====direct.queue_2===="+ student);
+        log.info(format + "====topic.queue_2===="+ student);
     }
 }
